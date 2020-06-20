@@ -227,7 +227,8 @@ func filterFirst(ctx stick.Context, val stick.Value, args ...stick.Value) stick.
 	}
 
 	if s := stick.CoerceString(val); s != "" {
-		return string(s[0])
+		runes := []rune(s)
+		return string(runes[0])
 	}
 
 	return nil
@@ -303,7 +304,8 @@ func filterLast(ctx stick.Context, val stick.Value, args ...stick.Value) stick.V
 	}
 
 	if s := stick.CoerceString(val); s != "" {
-		return string(s[len(s)-1])
+		runes := []rune(s)
+		return string(runes[len(runes)-1])
 	}
 
 	return nil
