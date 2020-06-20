@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"reflect"
 	"sort"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/tyler-sommer/stick"
-	"reflect"
-	"time"
 )
 
 // builtInFilters returns a map containing all built-in Twig filters,
@@ -351,8 +351,9 @@ func filterMerge(ctx stick.Context, val stick.Value, args ...stick.Value) stick.
 }
 
 func filterNL2BR(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	// TODO: Implement Me
-	return val
+	// TODO: escape input before replacing nl with br
+	input := stick.CoerceString(val)
+	return stick.NewSafeValue(strings.ReplaceAll(input, "\n", "<br />"))
 }
 
 func filterNumberFormat(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {

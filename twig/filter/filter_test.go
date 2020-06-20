@@ -84,6 +84,8 @@ func TestFilters(t *testing.T) {
 		{"last array", func() stick.Value { return filterLast(nil, []string{"1", "2", "3", "4"}) }, "4"},
 		{"last string", func() stick.Value { return filterLast(nil, "1234") }, "4"},
 		{"last string utf8", func() stick.Value { return filterLast(nil, "東京") }, "京"},
+
+		{"nl2br", func() stick.Value { return filterNL2BR(nil, "a\nb\nc") }, "a<br />b<br />c"},
 	}
 	for _, test := range tests {
 		res := test.actual()
