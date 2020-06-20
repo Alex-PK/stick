@@ -3,7 +3,9 @@ package filter // import "github.com/tyler-sommer/stick/twig/filter"
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
+	"sort"
 	"strings"
 	"unicode/utf8"
 
@@ -267,8 +269,26 @@ func filterJSONEncode(ctx stick.Context, val stick.Value, args ...stick.Value) s
 }
 
 func filterKeys(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	// TODO: Implement Me
-	return val
+	r := reflect.Indirect(reflect.ValueOf(val))
+	switch r.Kind() {
+	case reflect.Slice, reflect.Array:
+		ln := r.Len()
+		res := make([]int, 0)
+		for i := 0; i < ln; i++ {
+			res = append(res, i)
+		}
+		return res
+	case reflect.Map:
+		keys := r.MapKeys()
+		res := make([]string, 0)
+		for _, k := range keys {
+			res = append(res, fmt.Sprintf("%v", k))
+		}
+		sort.Strings(res)
+		return res
+	default:
+		return []string{}
+	}
 }
 
 func filterLast(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
