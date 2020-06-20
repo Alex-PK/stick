@@ -79,6 +79,9 @@ func TestFilters(t *testing.T) {
 		{"keys map", func() stick.Value {
 			return stickSliceToString(filterKeys(nil, map[string]string{"a": "1", "b": "2", "c": "3"}))
 		}, `a.b.c`},
+
+		{"last array", func() stick.Value { return filterLast(nil, []string{"1", "2", "3", "4"}) }, "4"},
+		{"last string", func() stick.Value { return filterLast(nil, "1234") }, "4"},
 	}
 	for _, test := range tests {
 		res := test.actual()

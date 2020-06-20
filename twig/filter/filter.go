@@ -292,8 +292,21 @@ func filterKeys(ctx stick.Context, val stick.Value, args ...stick.Value) stick.V
 }
 
 func filterLast(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	// TODO: Implement Me
-	return val
+	if stick.IsArray(val) {
+		arr := reflect.ValueOf(val)
+		return arr.Index(arr.Len() - 1).Interface()
+	}
+
+	if stick.IsMap(val) {
+		// TODO: Trigger runtime error, Golang randomises map keys so getting the "Last" does not make sense
+		return nil
+	}
+
+	if s := stick.CoerceString(val); s != "" {
+		return string(s[len(s)-1])
+	}
+
+	return nil
 }
 
 // filterLength returns the length of val.
