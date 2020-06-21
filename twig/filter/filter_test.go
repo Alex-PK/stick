@@ -96,6 +96,10 @@ func TestFilters(t *testing.T) {
 			},
 			"I like foo and bar.",
 		},
+
+		{"reverse array", func() stick.Value { return stickSliceToString(filterReverse(nil, []string{"1", "2", "3", "4"})) }, "4.3.2.1"},
+		{"reverse string", func() stick.Value { return filterReverse(nil, "1234") }, "4321"},
+		{"reverse string utf8", func() stick.Value { return filterReverse(nil, "東京") }, "京東"},
 	}
 	for _, test := range tests {
 		res := test.actual()
