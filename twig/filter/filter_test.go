@@ -88,6 +88,14 @@ func TestFilters(t *testing.T) {
 		{"nl2br", func() stick.Value { return filterNL2BR(nil, "a\nb\nc").(stick.SafeValue).Value() }, "a<br />b<br />c"},
 
 		{"raw", func() stick.Value { return filterRaw(nil, "<script></script>").(stick.SafeValue).Value() }, "<script></script>"},
+
+		{
+			"replace",
+			func() stick.Value {
+				return filterReplace(nil, "I like %this% and %that%.", map[string]string{"%this%": "foo", "%that%": "bar"})
+			},
+			"I like foo and bar.",
+		},
 	}
 	for _, test := range tests {
 		res := test.actual()
