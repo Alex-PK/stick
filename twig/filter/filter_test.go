@@ -85,7 +85,9 @@ func TestFilters(t *testing.T) {
 		{"last string", func() stick.Value { return filterLast(nil, "1234") }, "4"},
 		{"last string utf8", func() stick.Value { return filterLast(nil, "東京") }, "京"},
 
-		{"nl2br", func() stick.Value { return filterNL2BR(nil, "a\nb\nc") }, "a<br />b<br />c"},
+		{"nl2br", func() stick.Value { return filterNL2BR(nil, "a\nb\nc").(stick.SafeValue).Value() }, "a<br />b<br />c"},
+
+		{"raw", func() stick.Value { return filterRaw(nil, "<script></script>").(stick.SafeValue).Value() }, "<script></script>"},
 	}
 	for _, test := range tests {
 		res := test.actual()
