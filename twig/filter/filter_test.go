@@ -100,6 +100,17 @@ func TestFilters(t *testing.T) {
 		{"reverse array", func() stick.Value { return stickSliceToString(filterReverse(nil, []string{"1", "2", "3", "4"})) }, "4.3.2.1"},
 		{"reverse string", func() stick.Value { return filterReverse(nil, "1234") }, "4321"},
 		{"reverse string utf8", func() stick.Value { return filterReverse(nil, "東京") }, "京東"},
+
+		{"round common down", func() stick.Value { return filterRound(nil, 3.4) }, 3.0},
+		{"round common up", func() stick.Value { return filterRound(nil, 3.6) }, 4.0},
+		{"round common half", func() stick.Value { return filterRound(nil, 3.5) }, 4.0},
+		{"round common down 2 digits", func() stick.Value { return filterRound(nil, 3.114, 2) }, 3.11},
+		{"round common up 2 digits", func() stick.Value { return filterRound(nil, 3.116, 2) }, 3.12},
+		{"round common half 2 digits", func() stick.Value { return filterRound(nil, 3.115, 2) }, 3.12},
+		{"round ceil", func() stick.Value { return filterRound(nil, 3.123, 0, "ceil") }, 4.0},
+		{"round ceil 2 digits", func() stick.Value { return filterRound(nil, 3.123, 2, "ceil") }, 3.13},
+		{"round floor", func() stick.Value { return filterRound(nil, 3.123, 0, "floor") }, 3.0},
+		{"round floor 2 digits", func() stick.Value { return filterRound(nil, 3.123, 2, "floor") }, 3.12},
 	}
 	for _, test := range tests {
 		res := test.actual()
