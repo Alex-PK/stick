@@ -438,7 +438,73 @@ func filterRound(ctx stick.Context, val stick.Value, args ...stick.Value) stick.
 }
 
 func filterSlice(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	// TODO: Implement Me
+	start := 0
+	if len(args) > 0 {
+		start = int(math.Round(stick.CoerceNumber(args[0])))
+	}
+
+	length := math.MaxInt32
+	if len(args) > 1 {
+		length = int(math.Round(stick.CoerceNumber(args[1])))
+	}
+
+	if stick.IsArray(val) {
+		res := make([]stick.Value, 0)
+		arr := reflect.ValueOf(val)
+		if start < 0 {
+			start = arr.Len() + start // start is negative so this effectively removes from the input length :)
+		}
+
+		end := arr.Len()
+		if length == 0 {
+			return res
+		} else if length > 0 {
+			end = int(math.Min(float64(start+length), float64(arr.Len())))
+		} else {
+			end = arr.Len() + length // length is negative so this effectively removes from the input length :)
+			if end <= start {
+				return res
+			}
+		}
+
+		for i := start; i < end; i++ {
+			res = append(res, arr.Index(i).Interface())
+		}
+
+		return res
+	}
+
+	if stick.IsMap(val) {
+		// TODO: Trigger runtime error, Golang randomises map keys so getting a slice does not make sense
+		return nil
+	}
+
+	if s := stick.CoerceString(val); s != "" {
+		res := make([]rune, 0)
+		input := []rune(s)
+
+		if start < 0 {
+			start = len(input) + start // start is negative so this effectively removes from the input length :)
+		}
+
+		end := len(input)
+		if length == 0 {
+			return string(res)
+		} else if length > 0 {
+			end = int(math.Min(float64(start+length), float64(len(input))))
+		} else {
+			end = len(input) + length // length is negative so this effectively removes from the input length :)
+			if end <= start {
+				return string(res)
+			}
+		}
+
+		for i := start; i < end; i++ {
+			res = append(res, input[i])
+		}
+		return string(res)
+	}
+
 	return val
 }
 

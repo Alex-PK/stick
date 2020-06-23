@@ -111,6 +111,21 @@ func TestFilters(t *testing.T) {
 		{"round ceil 2 digits", func() stick.Value { return filterRound(nil, 3.123, 2, "ceil") }, 3.13},
 		{"round floor", func() stick.Value { return filterRound(nil, 3.123, 0, "floor") }, 3.0},
 		{"round floor 2 digits", func() stick.Value { return filterRound(nil, 3.123, 2, "floor") }, 3.12},
+
+		{"slice array 2..", func() stick.Value { return stickSliceToString(filterSlice(nil, []string{"a", "b", "c", "d", "e"}, 2)) }, "c.d.e"},
+		{"slice array 2..2", func() stick.Value {
+			return stickSliceToString(filterSlice(nil, []string{"a", "b", "c", "d", "e"}, 2, 2))
+		}, "c.d"},
+		{"slice array -3..2", func() stick.Value {
+			return stickSliceToString(filterSlice(nil, []string{"a", "b", "c", "d", "e"}, -3, 2))
+		}, "c.d"},
+		{"slice array -3..-1", func() stick.Value {
+			return stickSliceToString(filterSlice(nil, []string{"a", "b", "c", "d", "e"}, -3, -1))
+		}, "c.d"},
+		{"slice string 2..", func() stick.Value { return filterSlice(nil, "abcde", 2) }, "cde"},
+		{"slice string 2..2", func() stick.Value { return filterSlice(nil, "abcde", 2, 2) }, "cd"},
+		{"slice string -3..2", func() stick.Value { return filterSlice(nil, "abcde", -3, 2) }, "cd"},
+		{"slice string -3..-1", func() stick.Value { return filterSlice(nil, "abcde", -3, -1) }, "cd"},
 	}
 	for _, test := range tests {
 		res := test.actual()
