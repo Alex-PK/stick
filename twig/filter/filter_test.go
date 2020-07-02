@@ -126,6 +126,14 @@ func TestFilters(t *testing.T) {
 		{"slice string 2..2", func() stick.Value { return filterSlice(nil, "abcde", 2, 2) }, "cd"},
 		{"slice string -3..2", func() stick.Value { return filterSlice(nil, "abcde", -3, 2) }, "cd"},
 		{"slice string -3..-1", func() stick.Value { return filterSlice(nil, "abcde", -3, -1) }, "cd"},
+
+		{"split string on comma", func() stick.Value { return stickSliceToString(filterSplit(nil, "a,b,c,d,e", ",")) }, "a.b.c.d.e"},
+		{"split string on comma limited", func() stick.Value { return stickSliceToString(filterSplit(nil, "a,b,c,d,e", ",", 3)) }, "a.b.c"},
+		{"split string on comma neg limited", func() stick.Value { return stickSliceToString(filterSplit(nil, "a,b,c,d,e", ",", -3)) }, "a.b"},
+		{"split string on comma neg limited big", func() stick.Value { return stickSliceToString(filterSplit(nil, "a,b,c,d,e", ",", -10)) }, ""},
+		{"split string on empty", func() stick.Value { return stickSliceToString(filterSplit(nil, "abcde", "")) }, "a.b.c.d.e"},
+		{"split string on empty", func() stick.Value { return stickSliceToString(filterSplit(nil, "abcde", "", 2)) }, "ab.cd.e"},
+		{"split string on empty", func() stick.Value { return stickSliceToString(filterSplit(nil, "abcde", "", -2)) }, "a.b.c.d.e"},
 	}
 	for _, test := range tests {
 		res := test.actual()

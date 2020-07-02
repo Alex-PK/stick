@@ -514,8 +514,55 @@ func filterSort(ctx stick.Context, val stick.Value, args ...stick.Value) stick.V
 }
 
 func filterSplit(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	// TODO: Implement Me
-	return val
+	input := stick.CoerceString(val)
+	delim := ""
+	limit := math.MaxInt32
+	if len(args) > 0 {
+		delim = stick.CoerceString(args[0])
+	}
+	if len(args) > 1 {
+		limit = int(math.Round(stick.CoerceNumber(args[1])))
+	}
+
+	fmt.Printf("input `%s`, delim `%s`, limit `%d`\n", input, delim, limit)
+
+	res := make([]string, 0)
+	if delim == "" {
+		if limit == math.MaxInt32 {
+			limit = 1
+		}
+		fmt.Printf("empty delim\n")
+		if limit <= 1 {
+			fmt.Printf("negative limit\n")
+			res = strings.Split(input, "")
+		} else {
+			fmt.Printf("positive limit\n")
+			temp := []rune(input)
+			for i := 0; i < len(temp); i += limit {
+				res = append(res, string(temp[i:intMin(i+limit, len(temp))]))
+			}
+		}
+	} else {
+		if limit == 0 {
+			limit = 1
+		}
+
+		fmt.Printf("non-empty delim\n")
+		temp := strings.Split(input, delim)
+		if limit > 0 {
+			fmt.Printf("positive limit\n")
+			for i := 0; i < intMin(limit, len(temp)); i++ {
+				res = append(res, temp[i])
+			}
+		} else {
+			fmt.Printf("negative limit\n")
+			for i := 0; i < intMax(0, len(temp)+limit); i++ {
+				res = append(res, temp[i])
+			}
+		}
+	}
+	fmt.Printf("Result `%v`\n", res)
+	return res
 }
 
 func filterStripTags(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
@@ -541,4 +588,20 @@ func filterUpper(ctx stick.Context, val stick.Value, args ...stick.Value) stick.
 func filterURLEncode(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
 	// TODO: Implement Me
 	return val
+}
+
+// Helpers
+
+func intMin(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func intMax(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
